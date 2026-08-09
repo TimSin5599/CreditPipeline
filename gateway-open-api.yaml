@@ -1,0 +1,147 @@
+openapi: 3.0.0
+info:
+  title: API аутентификации пользователей
+  version: 1.0.0
+  description: API для регистрации и входа пользователей
+
+paths:
+  /api/v1/auth/register:
+    post:
+      tags:
+        - Аутентификация
+      summary: Регистрация нового пользователя
+      description: Создание учетной записи пользователя с указанными данными
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegistration'
+            examples:
+              testUser:
+                value:
+                  email: "test@ya.ru"
+                  fullname:
+                    firstname: "Имя"
+                    lastname: "Фамилия"
+                    middlename: "Отчество"
+                  password: "supersecuritypassword"
+      responses:
+        '201':
+          description: Пользователь успешно зарегистрирован
+        '400':
+          description: Некорректные входные данные
+        '409':
+          description: Пользователь уже существует
+
+  /api/v1/auth/login:
+    post:
+      tags:
+        - Аутентификация
+      summary: Вход пользователя
+      description: Аутентификация пользователя по email и паролю
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+            examples:
+              testLogin:
+                value:
+                  email: "test@ya.ru"
+                  password: "supersecuritypassword"
+      responses:
+        '200':
+          description: Успешный вход
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: JWT токен аутентификации
+        '401':
+          description: Неавторизован - неверные учетные данные
+        '404':
+          description: Пользователь не найден
+
+components:
+  schemas:
+    UserRegistration:
+      type: object
+      required:
+        - email
+        - fullname
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          pattern: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+          example: test@ya.ru
+          description: Электронная почта пользователя
+        fullname:
+          $ref: '#/components/schemas/FullName'
+          description: ФИО пользователя
+        password:
+          type: string
+          minLength: 8
+          maxLength: 64
+          pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$'
+          description: Должен содержать минимум одну заглавную букву, одну строчную букву и одну цифру
+          example: supersecuritypassword
+      additionalProperties: false
+      description: Данные для регистрации пользователя
+
+    UserLogin:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          pattern: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+          example: test@ya.ru
+          description: Электронная почта пользователя
+        password:
+          type: string
+          minLength: 8
+          maxLength: 64
+          example: supersecuritypassword
+          description: Пароль пользователя
+      additionalProperties: false
+      description: Данные для входа пользователя
+
+    FullName:
+      type: object
+      required:
+        - firstname
+        - lastname
+      properties:
+        firstname:
+          type: string
+          minLength: 2
+          maxLength: 50
+          pattern: '^[А-Яа-яЁёA-Za-z-]+$'
+          example: Имя
+          description: Имя пользователя
+        lastname:
+          type: string
+          minLength: 2
+          maxLength: 50
+          pattern: '^[А-Яа-яЁёA-Za-z-]+$'
+          example: Фамилия
+          description: Фамилия пользователя
+        middlename:
+          type: string
+          minLength: 2
+          maxLength: 50
+          pattern: '^[А-Яа-яЁёA-Za-z-]+$'
+          example: Отчество
+          description: Отчество пользователя (необязательное поле)
+      additionalProperties: false
+      description: Полное имя пользователя
