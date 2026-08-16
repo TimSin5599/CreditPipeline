@@ -19,6 +19,7 @@ import ru.creditbank.apigateway.core.UserModel;
 public class JwtService {
 
     private static final String ROLE_CLAIM = "role";
+    private static final String USER_ID_CLAIM = "user_id";
 
     private final JwtConfig jwtConfig;
     private final SecretKey key;
@@ -35,6 +36,7 @@ public class JwtService {
         return Jwts.builder()
                 .subject(user.getEmail())
                 .claim(ROLE_CLAIM, user.getRole().name())
+                .claim(USER_ID_CLAIM, user.getId())
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(expiration))
                 .signWith(key)
@@ -47,6 +49,10 @@ public class JwtService {
 
     public String extractRole(String token) {
         return parseClaims(token).get(ROLE_CLAIM, String.class);
+    }
+
+    public String extractUserId(String token) {
+        return parseClaims(token).get(USER_ID_CLAIM, String.class);
     }
 
     public boolean isTokenValid(String token) {
