@@ -11,9 +11,7 @@ import org.springframework.test.context.TestPropertySource;
 		"spring.datasource.password="
 })
 class ApigatewayApplicationTests {
-
 	@Test
 	void contextLoads() {
 	}
-
 }

@@ -16,7 +16,6 @@ import ru.creditbank.apigateway.registration.service.AuthService;
 @RequestMapping("/api/v1/admin")
 @RequiredArgsConstructor
 public class AdminController {
-
     private final AuthService authService;
 
     @GetMapping("/users")

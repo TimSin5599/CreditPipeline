@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import ru.creditbank.apigateway.core.Role;
@@ -31,13 +32,8 @@ import ru.creditbank.apigateway.registration.rest.FullNameRequest;
 import ru.creditbank.apigateway.registration.rest.LoginRequest;
 import ru.creditbank.apigateway.registration.rest.RegisterRequest;
 
-/**
- * userRepository is mocked but backed by a real HashMap, so register-then-login style
- * flows behave like they would against a real database without needing a Spring context.
- */
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
-
     @Mock
     private UserRepository userRepository;
 
@@ -91,6 +87,14 @@ class AuthServiceTest {
     void register_duplicateEmail_throws() {
         when(passwordEncoder.encode(anyString())).thenReturn("hashed");
         authService.register(REGISTER_REQUEST);
+
+        assertThrows(UserAlreadyExistsException.class, () -> authService.register(REGISTER_REQUEST));
+    }
+
+    @Test
+    void register_concurrentDuplicateInsert_throwsUserAlreadyExistsNotRawDbException() {
+        when(passwordEncoder.encode(anyString())).thenReturn("hashed");
+        when(userRepository.save(any(UserModel.class))).thenThrow(new DataIntegrityViolationException("unique violation"));
 
         assertThrows(UserAlreadyExistsException.class, () -> authService.register(REGISTER_REQUEST));
     }

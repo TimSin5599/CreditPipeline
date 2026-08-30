@@ -1,4 +1,6 @@
 spring:
+  config:
+    import: optional:file:.env[.properties]
   application:
     name: apigateway
   datasource:
@@ -16,7 +18,7 @@ spring:
       fail-on-unknown-properties: true
 
 server:
-  port: 8080
+  port: ${SERVER_PORT:8080}
 
 jwt:
   secret: ${JWT_SECRET:REPLACE_WITH_A_LONG_RANDOM_BASE64_SECRET_AT_LEAST_32_BYTES}
@@ -27,3 +29,9 @@ admin:
   bootstrap:
     email: ${ADMIN_EMAIL:admin@creditbank.ru}
     password: ${ADMIN_PASSWORD:AdminPass123}
+
+services:
+  credit-operations:
+    base-url: ${CREDIT_OPERATIONS_URL:http://localhost:8081}
+  loan-management:
+    base-url: ${LOAN_MANAGEMENT_URL:http://localhost:8082}

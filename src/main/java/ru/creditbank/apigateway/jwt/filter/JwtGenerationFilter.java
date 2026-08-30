@@ -3,6 +3,8 @@ package ru.creditbank.apigateway.jwt.filter;
 import java.io.IOException;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,6 +21,7 @@ import ru.creditbank.apigateway.jwt.service.JwtService;
 
 @Component
 public class JwtGenerationFilter extends OncePerRequestFilter {
+    private static final Logger log = LoggerFactory.getLogger(JwtGenerationFilter.class);
 
     private static final String AUTH_REGISTER_PATH = "/api/v1/auth/register";
     private static final String AUTH_LOGIN_PATH = "/api/v1/auth/login";
@@ -47,13 +50,19 @@ public class JwtGenerationFilter extends OncePerRequestFilter {
             if (jwtService.isTokenValid(token)) {
                 String email = jwtService.extractEmail(token);
                 String role = jwtService.extractRole(token);
+                String userId = jwtService.extractUserId(token);
 
                 Authentication authentication = new UsernamePasswordAuthenticationToken(
                         email, null, List.of(new SimpleGrantedAuthority("ROLE_" + role)));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
                 response.setHeader(HttpHeaders.AUTHORIZATION, BEARER_PREFIX + token);
+                log.info("JWT validated and attached, userId={}, role={}, path={}", userId, role, request.getRequestURI());
+            } else {
+                log.warn("Rejected request with invalid JWT, path={}", request.getRequestURI());
             }
+        } else {
+            log.warn("Rejected request with missing or malformed Authorization header, path={}", request.getRequestURI());
         }
 
         filterChain.doFilter(request, response);

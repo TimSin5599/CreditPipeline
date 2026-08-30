@@ -67,7 +67,32 @@ paths:
         '404':
           description: Пользователь не найден
 
+  /credit-service/api/v1/credit/:
+    post:
+      tags:
+        - Маршрутизация
+      summary: Подача заявки на кредит
+      description: >
+        Требует роль USER. Gateway проверяет JWT (заголовок Authorization: Bearer <token>)
+        и маршрутизирует запрос на сервис credit-operations без изменения тела запроса.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Ответ credit-operations передаётся без изменений
+        '400':
+          description: Некорректные данные заявки (передаётся от credit-operations)
+        '401':
+          description: Отсутствует или недействителен JWT
+        '403':
+          description: Роль пользователя не USER
+
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     UserRegistration:
       type: object

@@ -8,7 +8,6 @@ import ru.creditbank.apigateway.registration.service.AuthService;
 
 @Configuration
 public class AdminBootstrapConfig {
-
     @Bean
     public CommandLineRunner adminBootstrapRunner(AuthService authService, AdminBootstrapProperties properties) {
         return args -> authService.registerBootstrapAdmin(properties.email(), properties.password());

@@ -12,7 +12,6 @@ import ru.creditbank.apigateway.core.Role;
 import ru.creditbank.apigateway.core.UserModel;
 
 class JwtServiceTest {
-
     private static final JwtConfig TEST_CONFIG =
             new JwtConfig("ThisIsATestOnlySecretKeyWithAtLeast32Bytes!!", 30, 10080);
 
@@ -25,13 +24,14 @@ class JwtServiceTest {
 
     @Test
     void generateToken_isValidAndCarriesEmailAndRole() {
-        UserModel user = UserModel.builder().email("test@ya.ru").role(Role.USER).build();
+        UserModel user = UserModel.builder().id("user-id-123").email("test@ya.ru").role(Role.USER).build();
 
         String token = jwtService.generateToken(user);
 
         assertTrue(jwtService.isTokenValid(token));
         assertEquals("test@ya.ru", jwtService.extractEmail(token));
         assertEquals("USER", jwtService.extractRole(token));
+        assertEquals("user-id-123", jwtService.extractUserId(token));
     }
 
     @Test
