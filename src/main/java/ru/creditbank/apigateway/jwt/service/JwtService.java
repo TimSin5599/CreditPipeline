@@ -17,7 +17,6 @@ import ru.creditbank.apigateway.core.UserModel;
 
 @Service
 public class JwtService {
-
     private static final String ROLE_CLAIM = "role";
     private static final String USER_ID_CLAIM = "user_id";
 

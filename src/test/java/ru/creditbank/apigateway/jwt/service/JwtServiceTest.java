@@ -12,7 +12,6 @@ import ru.creditbank.apigateway.core.Role;
 import ru.creditbank.apigateway.core.UserModel;
 
 class JwtServiceTest {
-
     private static final JwtConfig TEST_CONFIG =
             new JwtConfig("ThisIsATestOnlySecretKeyWithAtLeast32Bytes!!", 30, 10080);
 

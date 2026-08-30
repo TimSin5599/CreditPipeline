@@ -7,9 +7,9 @@ import org.springframework.web.client.RestClient;
 import ru.creditbank.apigateway.logging.TraceIdPropagationInterceptor;
 
 @Configuration
-public class CreditRoutingConfig {
+public class LoanRoutingConfig {
     @Bean
-    public RestClient creditServiceRestClient(RestClient.Builder builder, CreditServiceProperties properties) {
+    public RestClient loanServiceRestClient(RestClient.Builder builder, LoanServiceProperties properties) {
         return builder.baseUrl(properties.baseUrl())
                 .requestInterceptor(new TraceIdPropagationInterceptor())
                 .build();

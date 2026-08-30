@@ -75,6 +75,13 @@
 			<optional>true</optional>
 		</dependency>
 
+		<!-- Structured JSON logging -->
+		<dependency>
+			<groupId>net.logstash.logback</groupId>
+			<artifactId>logstash-logback-encoder</artifactId>
+			<version>8.0</version>
+		</dependency>
+
 		<!-- DB -->
 		<dependency>
 			<groupId>com.h2database</groupId>

@@ -18,7 +18,6 @@ import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestClient;
 
 class CreditRoutingControllerTest {
-
     private static final String BASE_URL = "http://credit-operations.test";
     private static final String BEARER_TOKEN = "Bearer stub-jwt-token";
 

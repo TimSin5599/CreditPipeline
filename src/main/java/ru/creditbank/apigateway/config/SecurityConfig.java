@@ -17,7 +17,6 @@ import ru.creditbank.apigateway.jwt.filter.JwtGenerationFilter;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -34,6 +33,7 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .requestMatchers("/credit-service/**").hasRole("USER")
+                        .requestMatchers("/loan-management-service/**").hasRole("USER")
                         .anyRequest().authenticated())
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)

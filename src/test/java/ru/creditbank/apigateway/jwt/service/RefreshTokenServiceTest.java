@@ -10,7 +10,6 @@ import ru.creditbank.apigateway.config.JwtConfig;
 import ru.creditbank.apigateway.core.exception.InvalidRefreshTokenException;
 
 class RefreshTokenServiceTest {
-
     private static final JwtConfig LONG_LIVED_CONFIG =
             new JwtConfig("ThisIsATestOnlySecretKeyWithAtLeast32Bytes!!", 30, 10080);
 

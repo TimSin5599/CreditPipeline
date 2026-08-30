@@ -1,5 +1,6 @@
 package ru.creditbank.apigateway.routes;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -19,12 +20,13 @@ import ru.creditbank.apigateway.jwt.service.JwtService;
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestPropertySource(properties = {
-        "spring.datasource.url=jdbc:h2:mem:credit-routing-security-test;DB_CLOSE_DELAY=-1;MODE=PostgreSQL",
+        "spring.datasource.url=jdbc:h2:mem:loan-routing-security-test;DB_CLOSE_DELAY=-1;MODE=PostgreSQL",
         "spring.datasource.username=sa",
         "spring.datasource.password="
 })
-class CreditRoutingSecurityTest {
-    private static final String CREDIT_APPLICATION_PATH = "/credit-service/api/v1/credit/";
+class LoanRoutingSecurityTest {
+    private static final String LOANS_PATH = "/loan-management-service/api/v1/payment/loans";
+    private static final String PAYMENT_PATH = "/loan-management-service/api/v1/payment";
 
     @Autowired
     private MockMvc mockMvc;
@@ -33,19 +35,17 @@ class CreditRoutingSecurityTest {
     private JwtService jwtService;
 
     @Test
-    void routeCreditApplication_noToken_isUnauthorized() throws Exception {
-        mockMvc.perform(post(CREDIT_APPLICATION_PATH)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{}"))
+    void getUserLoans_noToken_isUnauthorized() throws Exception {
+        mockMvc.perform(get(LOANS_PATH))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    void routeCreditApplication_adminToken_isForbidden() throws Exception {
+    void createPayment_adminToken_isForbidden() throws Exception {
         UserModel admin = UserModel.builder().id("admin-id").email("admin@ya.ru").role(Role.ADMIN).build();
         String token = jwtService.generateToken(admin);
 
-        mockMvc.perform(post(CREDIT_APPLICATION_PATH)
+        mockMvc.perform(post(PAYMENT_PATH)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
